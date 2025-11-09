@@ -1,0 +1,93 @@
+:root{
+    --headerFontSize: 2rem;
+    --headerPadding: .5rem;
+    --footerFontSize: 1rem;
+    --footerPadding: 1rem;
+    --mainHeight: calc(
+        100vh
+        - var(--headerFontSize)
+        - (5 * var(--headerPadding))
+        - var(--footerFontSize)
+        - (2 * var(--footerPadding))
+    );
+
+    margin: 0;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-size: 1rem;
+    line-height: 1.5;
+}
+
+header {
+    padding: var(--headerPadding);
+    font-size: var(--headerFontSize);
+    text-align: center;
+    background-color: lightgreen;
+}
+
+main {
+    padding: 10px;
+    height: var(--mainHeight);
+    max-height: var(--mainHeight);
+    font-size: 1.5rem;
+    text-align: center;
+    background-color: lightblue;
+    overflow-y: auto;
+}
+
+footer {
+    font-size: var(--footerFontSize);
+    padding: var(--footerPadding);
+    text-align: center;
+    background-color: lightgreen;
+}
+
+#shoppingCart {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+#products {
+    margin: 1rem;
+    height: calc(var(--mainHeight) - 40%);
+}
+
+#summary {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin: 1rem;
+    height: calc(var(--mainHeight) - 60%);
+
+    div{
+        margin: .4rem;
+        padding: .5rem;
+        font-size: 1.8rem;
+        background-color: lightgreen;
+        border: .1rem solid black;
+    }
+}
+
+.product {
+    display: flex;
+    margin: .4rem;
+    padding: .5rem;
+    font-size: 1.8rem;
+    background-color: lightgreen;
+    border: .1rem solid black;
+
+    div{
+        flex: 1 1 auto;
+        text-align: center;
+    }
+}
