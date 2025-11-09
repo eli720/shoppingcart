@@ -1,90 +1,87 @@
-// create the roll function form random values
-function roll(min, max, floatFlag) {
+// 优化后的 roll 函数，增加参数验证
+function roll(min, max, floatFlag = false) {
+    if (min >= max) throw new Error('min must be less than max');
     let r = Math.random() * (max - min) + min;
     return floatFlag ? r : Math.floor(r);
 }
 
-// user name list
+// 用户名列表
 const userNames = ['Davi', 'Dava', 'Davb', 'Davc'];
 
-// Ages between 12 and 64
-// Heights between 5.1 and 6 meters
-
-// generate users
+// 生成用户信息
 const user = {
-    name:userNames[roll(0, userNames.length)],
-    age:roll(12, 65),
+    name: userNames[roll(0, userNames.length)],
+    age: roll(12, 65),
     height: Number(roll(5.1, 6.1, true).toFixed(1))
 }
 
-console.log(user);
+console.log('User:', user);
 
-let possibleProducts = ["🍇", "🍈", "🍉", "🍊", "🍋", "🍌", "🍍", "🥭", "🍎", "🍏", "🍐", "🍑", "🍒", "🍓", "🥝", "🍅", "🥥", "🥑", "🍆", "🥔", "🥕", "🌽", "🌶", "🥒", "🥬", "🥦"]
+// 产品列表
+const possibleProducts = ["🍇", "🍈", "🍉", "🍊", "🍋", "🍌", "🍍", "🥭", "🍎", "🍏", "🍐", "🍑", "🍒", "🍓", "🥝", "🍅", "🥥", "🥑", "🍆", "🥔", "🥕", "🌽", "🌶", "🥒", "🥬", "🥦"]
 
-// let products = [...Array(5)].map((_,i) => ({
+// 生成产品数组
+const products = [...Array(5)].map((_, index) => ({
+    id: index,
+    title: possibleProducts[roll(0, possibleProducts.length)],
+    price: parseFloat(roll(1, 10, true).toFixed(2)),
+    count: roll(1, 6),
+    weight: parseFloat(roll(6, 20, true).toFixed(2)),
+}));
 
-// }))
-const products = [...Array(5)].map((_,index) => {
-    return {
-        index,
-        title: possibleProducts[roll(0, possibleProducts.length)],
-        price: roll(1, 10, true).toFixed(2),
-        count: roll(1, 6),
-        weight: roll(6, 20, true).toFixed(2),
-    }
-});
+console.log('Products:', products);
 
-console.log(products);
-
-// Calculate the Cart Total using .reduce
+// 计算购物车总价
 const cartTotal = products.reduce((accumulator, product) => {
-    return accumulator + parseFloat(product.price) * product.count;
-}, 0).toFixed(2);
+    return accumulator + product.price * product.count;
+}, 0);
 
-console.log(cartTotal);
+console.log('Cart Total:', cartTotal.toFixed(2));
 
-// Calculate the Weight Total using .reduce
+// 计算总重量
 const totalWeight = products.reduce((accumulator, product) => {
-    return accumulator + parseFloat(product.weight) * product.count;
-}, 0).toFixed(2);
+    return accumulator + product.weight * product.count;
+}, 0);
 
-console.log(totalWeight);
+console.log('Total Weight:', totalWeight.toFixed(2));
 
-// roll() for a random Tax Rate between 5% and 9%
-// rounding to the nearest 10th
-const taxRate = roll(5, 9, true).toFixed(1);
+// 生成随机税率 (5% - 9%)
+const taxRate = roll(5, 9, true);
 
-// Apply that Tax Rate to the Cart Total
-const taxed = () => taxRate / 100 * cartTotal + parseFloat(cartTotal)
+// 计算含税总价
+const taxedTotal = cartTotal * (1 + taxRate / 100);
 
-const taxedTotal = taxed().toFixed(2);
+console.log('Tax Rate:', taxRate.toFixed(1) + '%');
+console.log('Taxed Total:', taxedTotal.toFixed(2));
 
-console.log(taxed());
+// 渲染产品列表
+function renderProducts() {
+    const productElement = document.getElementById('products');
+    if (!productElement) return;
 
-// mount the products
-let productElement = document.getElementById('products');
-let cartHtml = '';
+    productElement.innerHTML = products.map(product => `
+        <div class="product">
+            <div>${product.title}</div>
+            <div>💲${product.price.toFixed(2)}</div>
+            <div>x ${product.count}</div>
+            <div>${product.weight.toFixed(2)}oz</div>
+        </div>
+    `).join('');
+}
 
-products.forEach(product => {
-    cartHtml += `
-    <div class="product">
-        <div>${product.title}</div>
-        <div>💲${product.price}</div>
-        <div>x ${product.count}</div>
-        <div>${product.weight}oz</div>
-    </div>
-    `
-})
+// 渲染摘要信息
+function renderSummary() {
+    const summary = document.getElementById('summary');
+    if (!summary) return;
 
-productElement.innerHTML = cartHtml;
+    summary.innerHTML = `
+        <div>Total: 💲${cartTotal.toFixed(2)}</div>
+        <div>Tax Rate: ${taxRate.toFixed(1)}%</div>
+        <div>Taxed Total: 💲${taxedTotal.toFixed(2)}</div>
+        <div>Total Weight: ${totalWeight.toFixed(2)}oz</div>
+    `;
+}
 
-// mount the summary
-let summary = document.getElementById('summary');
-let summaryHtml = '';
-
-summaryHtml += `<div>Total: 💲${cartTotal}</div>`
-summaryHtml += `<div>Tax Rate: 💲${taxRate}%</div>`
-summaryHtml += `<div>Taxed Total: 💲${taxedTotal}</div>`
-summaryHtml += `<div>Total Weight: ${totalWeight}oz</div>`
-
-summary.innerHTML = summaryHtml;
+// 初始化渲染
+renderProducts();
+renderSummary();
